@@ -8,6 +8,8 @@ Instead of xattr, it uses the Cocoa Scripting Bridge to control the Finder direc
 
 The advantage is that the comments are not only recognized by mdfind (which is also true for Open Meta), they are also displayed in the "Get Info" panel.
 
+Not directly linked to Finder, but the plugin also provides an alternative "SORT ARRAY" method, which sorts an array in the same way as Finder. "File 1", "File 11", "File 2" will appear in their numerical order, to give an obvious example.
+
 Example
 -------
 
@@ -51,5 +53,4 @@ $test{4}:="test 21"
 $test{5}:="test 20"
 
 Finder SORT ARRAY ($test)
-
 ```
