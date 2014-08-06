@@ -1,0 +1,268 @@
+// !$*UTF8*$!
+{
+	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Deployment;
+		activeExecutable = D1FA41AF199197A400B099FE /* 実行可能ファイル */;
+		activeTarget = 8D01CCC60486CAD60068D4B7 /* Finder Control */;
+		addToTargets = (
+			8D01CCC60486CAD60068D4B7 /* Finder Control */,
+		);
+		breakpoints = (
+			D1FA422E1991A55E00B099FE /* 4DPlugin.cpp:286 */,
+		);
+		codeSenseManager = D1FA4168199191CC00B099FE /* Code sense */;
+		executables = (
+			D1FA41AF199197A400B099FE /* 実行可能ファイル */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					244,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					356,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFindDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFindDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					200,
+					370,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFindDataSource_MessageID,
+					PBXFindDataSource_LocationID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					316,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 428970399;
+			PBXWorkspaceStateSaveDate = 428970399;
+		};
+		perUserProjectItems = {
+			D1FA416D1991920200B099FE /* PBXTextBookmark */ = D1FA416D1991920200B099FE /* PBXTextBookmark */;
+			D1FA418B199192A100B099FE /* PBXTextBookmark */ = D1FA418B199192A100B099FE /* PBXTextBookmark */;
+			D1FA419C1991964B00B099FE /* PBXTextBookmark */ = D1FA419C1991964B00B099FE /* PBXTextBookmark */;
+			D1FA42451991A60F00B099FE /* PBXTextBookmark */ = D1FA42451991A60F00B099FE /* PBXTextBookmark */;
+		};
+		sourceControlManager = D1FA4167199191CC00B099FE /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	089C167EFE841241C02AAC07 /* English */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {551, 245}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 192}";
+			sepNavWindowFrame = "{{15, 85}, {929, 788}}";
+		};
+	};
+	18B684FE06944F8800CC6A1E /* 4DPlugin.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {700, 4862}}";
+			sepNavSelRange = "{8220, 0}";
+			sepNavVisRange = "{1060, 296}";
+			sepNavWindowFrame = "{{409, 90}, {929, 788}}";
+		};
+	};
+	8D01CCC60486CAD60068D4B7 /* Finder Control */ = {
+		activeExec = 0;
+	};
+	8D01CCD10486CAD60068D4B7 /* Info.plist */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{38, 64}, {929, 788}}";
+		};
+	};
+	D120937E13534DCC00A72CAA /* 4DPlugin.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {870, 660}}";
+			sepNavSelRange = "{1214, 0}";
+			sepNavVisRange = "{0, 1214}";
+		};
+	};
+	D1FA4167199191CC00B099FE /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	D1FA4168199191CC00B099FE /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	D1FA416D1991920200B099FE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 089C167EFE841241C02AAC07 /* English */;
+		name = "InfoPlist.strings: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 192;
+		vrLoc = 0;
+	};
+	D1FA418B199192A100B099FE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 18B684FE06944F8800CC6A1E /* 4DPlugin.cpp */;
+		name = "4DPlugin.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 488;
+		vrLoc = 0;
+	};
+	D1FA4191199192A900B099FE /* Finder.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {4359, 11414}}";
+			sepNavSelRange = "{3724, 14}";
+			sepNavVisRange = "{3441, 369}";
+			sepNavWindowFrame = "{{16, 180}, {868, 692}}";
+		};
+	};
+	D1FA419C1991964B00B099FE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = D1FA4191199192A900B099FE /* Finder.h */;
+		name = "Finder.h: 159";
+		rLen = 0;
+		rLoc = 5530;
+		rType = 0;
+		vrLen = 886;
+		vrLoc = 5045;
+	};
+	D1FA41AF199197A400B099FE /* 実行可能ファイル */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "ランナーを有効にする";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = D1FA41B0199197A400B099FE /* 4D.app */;
+		libgmallocEnabled = 0;
+		name = "実行可能ファイル";
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+			"_elementCode-DescType-Finder_set_comment" = 5;
+			"descriptorType-DescType-Finder_get_display_name" = 5;
+		};
+	};
+	D1FA41B0199197A400B099FE /* 4D.app */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
+		name = 4D.app;
+		path = /Applications/4D/13.5/158796/4D.app;
+		sourceTree = "<absolute>";
+	};
+	D1FA422E1991A55E00B099FE /* 4DPlugin.cpp:286 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 18B684FE06944F8800CC6A1E /* 4DPlugin.cpp */;
+		hitCount = 1;
+		ignoreCount = 0;
+		lineNumber = 286;
+		location = "Finder Control";
+		modificationTime = 428975544.63594;
+		originalNumberOfMultipleMatches = 1;
+		state = 1;
+	};
+	D1FA42451991A60F00B099FE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = D1FA4191199192A900B099FE /* Finder.h */;
+		name = "Finder.h: 159";
+		rLen = 0;
+		rLoc = 5530;
+		rType = 0;
+		vrLen = 886;
+		vrLoc = 5045;
+	};
+}
