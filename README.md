@@ -6,7 +6,7 @@ Comments are imported (indexed) by Spotlight, which makes the item easier to fin
 
 Instead of [xattr] (https://developer.apple.com/library/mac/documentation/Darwin/Reference/Manpages/man1/xattr.1.html), it uses the Cocoa [Scripting Bridge] (https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ScriptingBridgeConcepts/Introduction/Introduction.html) to control the Finder directly.
 
-The advantage is that the comments are not only recognized by mdfind (which is also true for [OpenMeta] (https://code.google.com/p/openmeta/)), they are also displayed in the "Get Info" panel.
+The advantage is that the comments are not only recognized by [mdfind] (https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/mdfind.1.html) (which is also true for [OpenMeta] (https://code.google.com/p/openmeta/)), they are also displayed in the "Get Info" panel.
 
 Not directly linked to Finder, but the plugin also provides an alternative "SORT ARRAY" method, which sorts an array in the same way as Finder. "File 1", "File 11", "File 2" will appear in their numerical order, to give an obvious example.
 
