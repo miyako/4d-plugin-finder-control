@@ -10,6 +10,41 @@ The advantage is that the comments are not only recognized by [mdfind] (https://
 
 Not directly linked to Finder, but the plugin also provides an alternative "SORT ARRAY" method, which sorts an array in the same way as Finder. "File 1", "File 11", "File 2" will appear in their numerical order, to give an obvious example.
 
+##Platform
+
+| carbon | cocoa | win32 | win64 |
+|:------:|:-----:|:---------:|:---------:|
+|🆗|🆗|🚫|🚫|
+
+Commands
+---
+
+```c
+// --- Comment
+Finder_set_comment
+Finder_get_comment
+
+// --- Lock
+Finder_set_locked
+Finder_get_locked
+
+// --- Extension
+Finder_set_extension_hidden
+Finder_get_extension_hidden
+
+// --- Sort
+Finder_SORT_ARRAY
+
+// --- Information
+Finder_get_display_name
+Finder_get_description
+Finder_get_kind
+
+// --- Control
+Finder_reveal
+Finder_trash
+```
+
 Example
 -------
 
