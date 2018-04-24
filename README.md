@@ -4,7 +4,7 @@
 This plugin allows 4D to read and write properties specific to the Finder on OS X, such as comments.
 Comments are imported (indexed) by Spotlight, which makes the item easier to find.
 
-Instead of [xattr](https://developer.apple.com/library/mac/documentation/Darwin/Reference/Manpages/man1/xattr.1.html), it uses the Cocoa [Scripting Bridge] (https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ScriptingBridgeConcepts/Introduction/Introduction.html) to control the Finder directly.
+Instead of [xattr](https://developer.apple.com/library/mac/documentation/Darwin/Reference/Manpages/man1/xattr.1.html), it uses the Cocoa [Scripting Bridge](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ScriptingBridgeConcepts/Introduction/Introduction.html) to control the Finder directly.
 
 The advantage is that the comments are not only recognized by [mdfind](https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/mdfind.1.html) (which is also true for [OpenMeta](https://code.google.com/p/openmeta/)), they are also displayed in the "Get Info" panel.
 
