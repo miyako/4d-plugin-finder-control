@@ -1,1 +1,66 @@
-﻿{"name":"Finder Control","id":20000,"commands":[{"theme":"Comment","syntax":"Finder set comment(&T;&T):L"},{"theme":"Comment","syntax":"Finder get comment(&T;&T):L"},{"theme":"Lock","syntax":"Finder set locked(&T;&L):L"},{"theme":"Lock","syntax":"Finder get locked(&T;&L):L"},{"theme":"Extension","syntax":"Finder set extension hidden(&T;&L):L"},{"theme":"Extension","syntax":"Finder get extension hidden(&T;&L):L"},{"theme":"Sort","syntax":"Finder SORT ARRAY(&Y)"},{"theme":"Information","syntax":"Finder get display name(&T;&T):L"},{"theme":"Information","syntax":"Finder get description(&T;&T):L"},{"theme":"Information","syntax":"Finder get kind(&T;&T):L"},{"theme":"Control","syntax":"Finder reveal(&T):L"},{"theme":"Control","syntax":"Finder trash(&T):L"}]}
+{
+    "name": "Finder Control",
+    "id": 20000,
+    "commands": [
+        {
+            "theme": "Comment",
+            "syntax": "Finder set comment(&T;&T):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Comment",
+            "syntax": "Finder get comment(&T;&T):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Lock",
+            "syntax": "Finder set locked(&T;&L):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Lock",
+            "syntax": "Finder get locked(&T;&L):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Extension",
+            "syntax": "Finder set extension hidden(&T;&L):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Extension",
+            "syntax": "Finder get extension hidden(&T;&L):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Sort",
+            "syntax": "Finder SORT ARRAY(&Y)",
+            "threadSafe": false
+        },
+        {
+            "theme": "Information",
+            "syntax": "Finder get display name(&T;&T):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Information",
+            "syntax": "Finder get description(&T;&T):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Information",
+            "syntax": "Finder get kind(&T;&T):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Control",
+            "syntax": "Finder reveal(&T):L",
+            "threadSafe": false
+        },
+        {
+            "theme": "Control",
+            "syntax": "Finder trash(&T):L",
+            "threadSafe": false
+        }
+    ]
+}
