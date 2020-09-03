@@ -10,15 +10,73 @@
 
 #include "4DPlugin-Finder-Control.h"
 
+#ifndef errAEEventWouldRequireUserConsent
+enum {
+    errAEEventWouldRequireUserConsent     =     -1744
+};
+#endif
+
+void requestPermission(NSString *bundleIdentifier) {
+    
+    if (@available(macOS 10.14, *)) {
+        OSStatus status;
+        
+        /*
+         alternatively
+         NSAppleEventDescriptor *targetAppEventDescriptor;
+         targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:@"com.apple.Notes"];
+         and pass targetAppEventDescriptor.aeDesc to AEDeterminePermissionToAutomateTarget()
+         */
+        
+        AEAddressDesc addressDesc;
+        
+        const char *bundleIdentifierCString = [bundleIdentifier cStringUsingEncoding:NSUTF8StringEncoding];
+        if(AECreateDesc(typeApplicationBundleID, bundleIdentifierCString, strlen(bundleIdentifierCString), &addressDesc) == noErr)
+        {
+            status = AEDeterminePermissionToAutomateTarget(&addressDesc, typeWildCard, typeWildCard, true);
+            AEDisposeDesc(&addressDesc);
+            
+            switch (status) {
+                case errAEEventWouldRequireUserConsent:
+                    NSLog(@"Automation permission pending for %@", bundleIdentifier);
+                    break;
+                case noErr:
+                    NSLog(@"Automation permission granted for %@", bundleIdentifier);
+                    break;
+                case errAEEventNotPermitted:
+                    NSLog(@"Automation permission denied for %@", bundleIdentifier);
+                    break;
+                case procNotFound:
+                    NSLog(@"Automation permission unknown for %@", bundleIdentifier);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+void OnStartup()
+{
+    requestPermission(@"com.apple.Finder");
+}
+
 #pragma mark -
 
-static FinderApplication *Finder = [SBApplication applicationWithBundleIdentifier:@"com.apple.Finder"];
-
-FinderItem *getFinderItem(C_TEXT &path){
-    NSURL *url = path.copyUrl();
-    SBElementArray *items = [Finder items];
-    FinderItem *item = [items objectAtLocation:url];
-    [url release];
+FinderItem *getFinderItem(C_TEXT &path) {
+    
+    FinderItem *item = nil;
+    
+    FinderApplication *application = [SBApplication applicationWithBundleIdentifier:@"com.apple.Finder"];
+    
+    if(application){
+    
+        NSURL *url = path.copyUrl();
+        SBElementArray *items = [application items];
+        item = [items objectAtLocation:url];
+        [url release];
+    }
+    
     return item;
 }
 
@@ -44,6 +102,11 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
 	{
         switch(selector)
         {
+            case kInitPlugin :
+            case kServerInitPlugin :
+                OnStartup();
+                break;
+                
 			// --- Finder Control
             
 			case 1 :
@@ -108,13 +171,15 @@ void Finder_set_comment(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        NSString *comment = Param2.copyUTF16String();
-        item.comment = comment;
-        [comment release];
-        returnValue.setIntValue(1);
+    if(item) {
+        if([item exists]){
+            NSString *comment = Param2.copyUTF16String();
+            item.comment = comment;
+            [comment release];
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     returnValue.setReturn(pResult);
 }
 
@@ -131,11 +196,13 @@ void Finder_get_comment(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        Param2.setUTF16String(item.comment);
-        returnValue.setIntValue(1);
+    if(item) {
+        if([item exists]){
+            Param2.setUTF16String(item.comment);
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     Param2.toParamAtIndex(pParams, 2);
     returnValue.setReturn(pResult);
 }
@@ -154,9 +221,11 @@ void Finder_set_locked(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        item.locked = Param2.getIntValue();
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            item.locked = Param2.getIntValue();
+            returnValue.setIntValue(1);
+        }
     }
     
     returnValue.setReturn(pResult);
@@ -175,11 +244,13 @@ void Finder_get_locked(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        Param2.setIntValue(item.locked);
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            Param2.setIntValue(item.locked);
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     Param2.toParamAtIndex(pParams, 2);
     returnValue.setReturn(pResult);
 }
@@ -198,11 +269,13 @@ void Finder_set_extension_hidden(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        item.extensionHidden = Param2.getIntValue();
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            item.extensionHidden = Param2.getIntValue();
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     returnValue.setReturn(pResult);
 }
 
@@ -219,11 +292,13 @@ void Finder_get_extension_hidden(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        Param2.setIntValue(item.extensionHidden);
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            Param2.setIntValue(item.extensionHidden);
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     Param2.toParamAtIndex(pParams, 2);
     returnValue.setReturn(pResult);
 }
@@ -270,11 +345,13 @@ void Finder_get_display_name(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        Param2.setUTF16String(item.displayedName);
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            Param2.setUTF16String(item.displayedName);
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     Param2.toParamAtIndex(pParams, 2);
     returnValue.setReturn(pResult);
 }
@@ -292,11 +369,13 @@ void Finder_get_description(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        Param2.setUTF16String(item.objectDescription);
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            Param2.setUTF16String(item.objectDescription);
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     Param2.toParamAtIndex(pParams, 2);
     returnValue.setReturn(pResult);
 }
@@ -314,9 +393,11 @@ void Finder_get_kind(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        Param2.setUTF16String(item.kind);
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            Param2.setUTF16String(item.kind);
+            returnValue.setIntValue(1);
+        }
     }
     
     Param2.toParamAtIndex(pParams, 2);
@@ -335,11 +416,13 @@ void Finder_reveal(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        [item reveal];
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            [item reveal];
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     returnValue.setReturn(pResult);
 }
 
@@ -355,10 +438,12 @@ void Finder_trash(PA_PluginParameters params) {
     
     FinderItem *item = getFinderItem(Param1);
     
-    if([item exists]){
-        [item delete];
-        returnValue.setIntValue(1);
+    if(item){
+        if([item exists]){
+            [item delete];
+            returnValue.setIntValue(1);
+        }
     }
-    
+
     returnValue.setReturn(pResult);
 }

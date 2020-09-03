@@ -8,7 +8,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			JgGu+jq3R6DYhz2c+4zU9XYWxuQ=
+			l/X5SHWbeMnNbJi6zOmHl9P/nhY=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -22,10 +22,6 @@
 	<dict>
 		<key>QuickLook/Thumbnail.png</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			hC+U8EqvyIRM1lLakHLfvl4V9Tc=
-			</data>
 			<key>hash2</key>
 			<data>
 			nGfrvibB5KlzvZgF4Bra+l0HpRloxismgTLePnOwCdk=
@@ -33,23 +29,15 @@
 		</dict>
 		<key>Resources/English.lproj/InfoPlist.strings</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			JgGu+jq3R6DYhz2c+4zU9XYWxuQ=
-			</data>
 			<key>hash2</key>
 			<data>
-			GBnbmewwU5OtDHl/sK2e19svuR1+/5pU0ue7LxMDG/I=
+			kFJI3R4S/icZIYnbJfCyS+EWjVFWFzx+VaB4kXPSvII=
 			</data>
 			<key>optional</key>
 			<true/>
 		</dict>
 		<key>Resources/constants.xlf</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			uO8nj4EwJCXvpu0eOFbnqK4ELg0=
-			</data>
 			<key>hash2</key>
 			<data>
 			W7VCIr0mdB8uQsKiSD749syGJdwjD8y4WpsCp/zTalQ=
@@ -57,10 +45,6 @@
 		</dict>
 		<key>Windows/Finder Control.4DX</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			hL9gqzB1pAgChKZ1uj+Jqt43yxs=
-			</data>
 			<key>hash2</key>
 			<data>
 			ZCCEqtPmUM+2iJDxTvuZrd5mchV7dH5Z4RZvNF7YQT0=
@@ -68,10 +52,6 @@
 		</dict>
 		<key>Windows64/Finder Control.4DX</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			zvoZ7ULt+O/aKx6NzgaqTillGNg=
-			</data>
 			<key>hash2</key>
 			<data>
 			xZ0isPdvytfz/ISMhvmTet0RKxwRCg6HeDepN7N2icI=
