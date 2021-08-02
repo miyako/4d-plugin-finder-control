@@ -11,11 +11,10 @@ The advantage is that the comments are not only recognized by [mdfind](https://d
 Not directly linked to Finder, but the plugin also provides an alternative "SORT ARRAY" method, which sorts an array in the same way as Finder. "File 1", "File 11", "File 2" will appear in their numerical order, to give an obvious example.
 
 ![version](https://img.shields.io/badge/version-18%2B-EB8E5F)
-![platform](https://img.shields.io/static/v1?label=platform&message=mac-intel%20|%20mac-arm%20|%20win-64&color=blue)
-[![license](https://img.shields.io/github/license/miyako/
-4d-plugin-finder-control)](LICENSE)
-![downloads](https://img.shields.io/github/downloads/miyako/
-4d-plugin-finder-control/total)
+![platform](https://img.shields.io/static/v1?label=platform&message=mac-intel%20|%20mac-arm&color=blue)
+[![license](https://img.shields.io/github/license/miyako/4d-plugin-finder-control)](LICENSE)
+![downloads](https://img.shields.io/github/downloads/miyako/4d-plugin-finder-control/total)
+
 ### Examples
 
 ```
