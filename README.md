@@ -17,7 +17,7 @@ Not directly linked to Finder, but the plugin also provides an alternative "SORT
 
 ### Examples
 
-```
+```4d
 $path:=Get 4D folder(Current Resources folder)+"sample.png"
 
 //comments as displayed in the Get Info dialog 
