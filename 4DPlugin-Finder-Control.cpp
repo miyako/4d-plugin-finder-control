@@ -165,18 +165,26 @@ void Finder_set_comment(PA_PluginParameters params) {
     C_TEXT Param1;
     C_TEXT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     Param2.fromParamAtIndex(pParams, 2);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item) {
-        if([item exists]){
-            NSString *comment = Param2.copyUTF16String();
-            item.comment = comment;
-            [comment release];
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item) {
+                if([item exists]){
+                    NSString *comment = Param2.copyUTF16String();
+                    item.comment = comment;
+                    [comment release];
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -191,15 +199,24 @@ void Finder_get_comment(PA_PluginParameters params) {
     C_TEXT Param1;
     C_TEXT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item) {
-        if([item exists]){
-            Param2.setUTF16String(item.comment);
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item) {
+                if([item exists]){
+                    /* item.comment is nil when the Finder item has no comment set */
+                    Param2.setUTF16String(item.comment ? item.comment : @"");
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -215,16 +232,24 @@ void Finder_set_locked(PA_PluginParameters params) {
     C_TEXT Param1;
     C_LONGINT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     Param2.fromParamAtIndex(pParams, 2);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            item.locked = Param2.getIntValue();
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    item.locked = Param2.getIntValue();
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
     
@@ -239,15 +264,23 @@ void Finder_get_locked(PA_PluginParameters params) {
     C_TEXT Param1;
     C_LONGINT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            Param2.setIntValue(item.locked);
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    Param2.setIntValue(item.locked);
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -263,16 +296,24 @@ void Finder_set_extension_hidden(PA_PluginParameters params) {
     C_TEXT Param1;
     C_LONGINT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     Param2.fromParamAtIndex(pParams, 2);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            item.extensionHidden = Param2.getIntValue();
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    item.extensionHidden = Param2.getIntValue();
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -287,15 +328,23 @@ void Finder_get_extension_hidden(PA_PluginParameters params) {
     C_TEXT Param1;
     C_LONGINT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            Param2.setIntValue(item.extensionHidden);
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    Param2.setIntValue(item.extensionHidden);
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -312,20 +361,36 @@ void Finder_SORT_ARRAY(PA_PluginParameters params) {
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    uint32_t i, length = Param1.getSize();
-    NSMutableArray *stringsArray = [[NSMutableArray alloc]initWithCapacity:length];
-    NSString *_string;
-    
-    for(i = 0; i < length; ++i){
-        _string = Param1.copyUTF16StringAtIndex(i);
-        [stringsArray insertObject:_string atIndex:i];
-        [_string release];
-    }
-    
-    NSArray *sortedArray = [stringsArray sortedArrayUsingFunction:sortWithOption context:[NSLocale currentLocale]];
-    
-    for(i = 0; i < length; ++i){
-        Param1.setUTF16StringAtIndex([sortedArray objectAtIndex:i], i);
+    @autoreleasepool {
+        try {
+            uint32_t i, length = Param1.getSize();
+            NSMutableArray *stringsArray = [[NSMutableArray alloc]initWithCapacity:length];
+            NSString *_string;
+
+            for(i = 0; i < length; ++i){
+                _string = Param1.copyUTF16StringAtIndex(i);
+                [stringsArray insertObject:_string atIndex:i];
+                [_string release];
+            }
+
+            NSArray *sortedArray = [stringsArray sortedArrayUsingFunction:sortWithOption context:[NSLocale currentLocale]];
+
+            for(i = 0; i < length; ++i){
+                Param1.setUTF16StringAtIndex([sortedArray objectAtIndex:i], i);
+            }
+
+            /* stringsArray was alloc'd/init'd (retain count 1) and is never
+               used again after producing sortedArray - release it here.
+               sortedArray itself is autoreleased by sortedArrayUsingFunction:
+               and needs no release. */
+            [stringsArray release];
+        }
+        catch(...) {
+            /* no-op: this command has no return value (see manifest.json,
+               "Finder SORT ARRAY(&Y)" has no trailing ":<type>"), so there is
+               nothing to set on the failure path - just don't let the
+               exception escape uncaught. */
+        }
     }
     
     Param1.toParamAtIndex(pParams, 1);
@@ -339,16 +404,24 @@ void Finder_get_display_name(PA_PluginParameters params) {
     C_TEXT Param1;
     C_TEXT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     Param2.fromParamAtIndex(pParams, 2);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            Param2.setUTF16String(item.displayedName);
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    Param2.setUTF16String(item.displayedName);
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -364,15 +437,23 @@ void Finder_get_description(PA_PluginParameters params) {
     C_TEXT Param1;
     C_TEXT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            Param2.setUTF16String(item.objectDescription);
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    Param2.setUTF16String(item.objectDescription);
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -388,15 +469,23 @@ void Finder_get_kind(PA_PluginParameters params) {
     C_TEXT Param1;
     C_TEXT Param2;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            Param2.setUTF16String(item.kind);
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    Param2.setUTF16String(item.kind);
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
     
@@ -411,15 +500,23 @@ void Finder_reveal(PA_PluginParameters params) {
     
     C_TEXT Param1;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            [item reveal];
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    [item reveal];
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
@@ -433,15 +530,23 @@ void Finder_trash(PA_PluginParameters params) {
 
     C_TEXT Param1;
     C_LONGINT returnValue;
+    returnValue.setIntValue(0);
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    FinderItem *item = getFinderItem(Param1);
-    
-    if(item){
-        if([item exists]){
-            [item delete];
-            returnValue.setIntValue(1);
+    @autoreleasepool {
+        try {
+            FinderItem *item = getFinderItem(Param1);
+
+            if(item){
+                if([item exists]){
+                    [item delete];
+                    returnValue.setIntValue(1);
+                }
+            }
+        }
+        catch(...) {
+            returnValue.setIntValue(0);
         }
     }
 
