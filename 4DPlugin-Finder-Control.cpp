@@ -10,11 +10,11 @@
 
 #include "4DPlugin-Finder-Control.h"
 
-#ifndef errAEEventWouldRequireUserConsent
-enum {
-    errAEEventWouldRequireUserConsent     =     -1744
-};
-#endif
+//#ifndef errAEEventWouldRequireUserConsent
+//enum {
+//    errAEEventWouldRequireUserConsent     =     -1744
+//};
+//#endif
 
 void requestPermission(NSString *bundleIdentifier) {
     
