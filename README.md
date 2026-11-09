@@ -25,6 +25,66 @@ Finder Control lets 4D read and write file/folder properties that belong to the 
 
 ---
 
+## Manual versioning and publication
+
+Actions has two independent release workflows. **Bump version** takes one required
+`mode` choice (`patch`, `minor`, or `major`, default `patch`) and commits source
+metadata to the selected branch. It does not build, tag, release, or dispatch
+another workflow. **Build** has no custom inputs: select a branch or tag with the
+built-in ref selector. It checks out that event's immutable SHA and derives the
+canonical `X.Y.Z` version from source, not a tag or an input.
+
+The original Bump header at `267f76ce5fccea99bbfd98585a3c73e5e39687e1`
+explicitly coordinates marketing/build/plist versions despite its marketing-only
+implementation. The migration keeps intake marketing version `2.0.5`, aligning
+the six stale build values and the actual copied `English.lproj/InfoPlist.strings`
+short/info display tokens to it. Target and project configurations are
+Development, Deployment, and Default (six of each version setting). Source
+`Info.plist` retains `$(MARKETING_VERSION)` and its absent build key; prebuilt
+bundle metadata is not authority and remains unchanged. Subsequent bumps validate
+all source fields before changing any bytes, preserving references, optional build
+absence, encodings, line endings, modes, and unrelated content.
+
+Bump requires its committed executable pre-push hook before editing and again
+before pushing. It checks the selected branch's advertised old SHA, permits one
+nonempty source-only direct-child commit with Actions bot identities and the
+co-author trailer, and uses a nonforce push with tag-following disabled. A moved,
+deleted, rewound, or already-updated branch stops the run; inspect retained state
+rather than retrying blindly.
+
+Build preserves the actual original topology: source validation on Ubuntu, then
+macOS Default universal compilation (`arm64` and `x86_64`, deployment override
+`11.0`), packaging from `test/Plugins/Finder Control.bundle`, Developer ID signing,
+notarization of ZIP and DMG, and DMG stapling. There is no Windows build job:
+the existing Windows64 payload, frameworks, static libraries, resources and 4D
+project are preserved. Cleanup removes only generated leaves/intermediates, never
+the whole bundle or Default siblings. Native tools and credentials are not used
+by offline tests.
+
+Publication has constant repository-wide cross-ref concurrency with cancellation
+disabled (not a FIFO guarantee). It requires explicit `GH_TOKEN`, unused exact
+API/remote tags and no matching draft/published release, checked before native work
+and again after signing/notarization/stapling. Final verification retains generated
+bytes (including tracked executable/plist/localization, fresh signature and narrow Xcode
+intermediates), while checking immutable HEAD, index and raw bytes of all other
+tracked files plus unexpected untracked/ignored files. Built XML/binary plist and
+localized metadata must match source.
+
+Publication creates a new tag ref at the selected SHA, then a new public release,
+then uploads only that new release ID's ZIP and DMG. Original notes policy remains
+an empty body with generated notes disabled; GitHub replaces asset-name spaces
+with dots. Existing tags/releases are never reused, overwritten, repaired or
+deleted. Any failure retains partial tags, releases and assets and reports the
+known state: manually inspect the Actions log and repository before deciding
+recovery; there is no automated rollback or retry.
+
+Intake `v2.0.5` is already published, so Build on the migrated, unbumped source
+intentionally stops at availability checking. Run Bump separately to create a
+fresh source version before a later manual Build.
+
+Offline checks: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s .github/scripts -v`
+and `actionlint .github/workflows/*.yml`.
+
 ## Requirements & platform notes
 
 - **macOS 10.14 (Mojave) or later.** The plugin checks Automation permission at startup using an API only available from macOS 10.14 onward.
