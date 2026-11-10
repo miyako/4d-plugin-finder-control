@@ -25,7 +25,7 @@ void ob_set_p(PA_ObjectRef obj, const wchar_t *_key, PA_Picture value) {
     {
         if(value)
         {
-            PA_Variable v = PA_CreateVariable(eVK_Picture);
+            PA_Variable v = PA_CreateVariable(eVK_Undefined);
             CUTF16String ukey;
             json_wconv(_key, &ukey);
             PA_Unistring key = PA_CreateUnistring((PA_Unichar *)ukey.c_str());
@@ -86,7 +86,7 @@ void ob_set_s(PA_ObjectRef obj, const char *_key, const char *_value) {
         PA_Unistring key = PA_CreateUnistring((PA_Unichar *)u16k.c_str());
         PA_Unistring value = PA_CreateUnistring((PA_Unichar *)u16v.c_str());
         
-        PA_Variable v = PA_CreateVariable(eVK_Unistring);
+        PA_Variable v = PA_CreateVariable(eVK_Undefined);
         PA_SetStringVariable(&v, &value);
         PA_SetObjectProperty(obj, &key, v);
         
@@ -103,7 +103,7 @@ void ob_set_s(PA_ObjectRef obj, const wchar_t *_key, const char *_value) {
     {
         if(_value)
         {
-            PA_Variable v = PA_CreateVariable(eVK_Unistring);
+            PA_Variable v = PA_CreateVariable(eVK_Undefined);
             CUTF16String ukey;
             
             json_wconv(_key, &ukey);
@@ -151,7 +151,7 @@ void ob_set_a(PA_ObjectRef obj, const wchar_t *_key, const wchar_t *_value) {
     {
         if(_value)
         {
-            PA_Variable v = PA_CreateVariable(eVK_Unistring);
+            PA_Variable v = PA_CreateVariable(eVK_Undefined);
             CUTF16String ukey;
             CUTF16String uvalue;
             json_wconv(_key, &ukey);
@@ -180,7 +180,7 @@ void ob_set_a(PA_ObjectRef obj, const wchar_t *_key, const CUTF16String *_value)
         // UTF-16 data as wchar_t there would misread the buffer width and
         // corrupt or over-read it. Only _key -- a real wchar_t string
         // literal from the caller -- goes through the normal conversion.
-        PA_Variable v = PA_CreateVariable(eVK_Unistring);
+        PA_Variable v = PA_CreateVariable(eVK_Undefined);
         CUTF16String ukey;
         json_wconv(_key, &ukey);
 
@@ -436,6 +436,19 @@ bool ob_is_defined(PA_ObjectRef obj, const wchar_t *_key) {
     return is_defined;
 }
 
+static bool getObjectProperty(PA_ObjectRef obj, PA_Unistring *key, PA_Variable *value) {
+    PA_Variable result = PA_GetObjectProperty(obj, key);
+    PA_ErrorCode error = PA_GetLastError();
+    if(error != eER_NoErr)
+    {
+        // Failed SDK getters can leave their returned variable uninitialized.
+        std::cerr << "Finder Control: PA_GetObjectProperty failed (" << error << ")\n";
+        return false;
+    }
+    *value = result;
+    return true;
+}
+
 bool ob_get_a(PA_ObjectRef obj, const wchar_t *_key, CUTF8String *value) {
     
     bool is_defined = false;
@@ -449,44 +462,49 @@ bool ob_get_a(PA_ObjectRef obj, const wchar_t *_key, CUTF8String *value) {
         
         if(is_defined)
         {
-            PA_Variable v = PA_GetObjectProperty(obj, &key);
-            if(PA_GetVariableKind(v) == eVK_Unistring)
+            PA_Variable v;
+            is_defined = getObjectProperty(obj, &key, &v);
+            if(is_defined)
             {
-                PA_Unistring uvalue = PA_GetStringVariable(v);
+                if(PA_GetVariableKind(v) == eVK_Unistring)
+                {
+                    PA_Unistring uvalue = PA_GetStringVariable(v);
                 
-                CUTF16String u = CUTF16String(uvalue.fString, uvalue.fLength);
+                    CUTF16String u = CUTF16String(uvalue.fString, uvalue.fLength);
 #ifdef _WIN32
-                int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)u.c_str(), u.length(), NULL, 0, NULL, NULL);
+                    int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)u.c_str(), u.length(), NULL, 0, NULL, NULL);
                 
-                if(len){
-                    std::vector<uint8_t> buf(len + 1);
-                    if(WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)u.c_str(), u.length(), (LPSTR)&buf[0], len, NULL, NULL)){
-                        *value = CUTF8String((const uint8_t *)&buf[0], (size_t)len);
+                    if(len){
+                        std::vector<uint8_t> buf(len + 1);
+                        if(WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)u.c_str(), u.length(), (LPSTR)&buf[0], len, NULL, NULL)){
+                            *value = CUTF8String((const uint8_t *)&buf[0], (size_t)len);
+                        }
+                    }else{
+                        *value = CUTF8String((const uint8_t *)"");
                     }
-                }else{
-                    *value = CUTF8String((const uint8_t *)"");
-                }
                 
 #else
-                CFStringRef str = CFStringCreateWithCharacters(kCFAllocatorDefault, (const UniChar *)u.c_str(), u.length());
-                if(str){
+                    CFStringRef str = CFStringCreateWithCharacters(kCFAllocatorDefault, (const UniChar *)u.c_str(), u.length());
+                    if(str){
                     
-                    size_t size = CFStringGetMaximumSizeForEncoding(
+                        size_t size = CFStringGetMaximumSizeForEncoding(
                                                                     CFStringGetLength(str),
                                                                     kCFStringEncodingUTF8) + sizeof(uint8_t);
-                    std::vector<uint8_t> buf(size);
-                    CFIndex len = 0;
-                    CFStringGetBytes(str,
+                        std::vector<uint8_t> buf(size);
+                        CFIndex len = 0;
+                        CFStringGetBytes(str,
                                      CFRangeMake(
                                                  0,
                                                  CFStringGetLength(str)),
                                      kCFStringEncodingUTF8,
                                      0, true, (UInt8 *)&buf[0], size, &len);
                     
-                    *value = CUTF8String((const uint8_t *)&buf[0], len);
-                    CFRelease(str);
-                }
+                        *value = CUTF8String((const uint8_t *)&buf[0], len);
+                        CFRelease(str);
+                    }
 #endif
+                }
+                PA_ClearVariable(&v);
             }
         }
         
@@ -508,10 +526,12 @@ bool ob_get_b(PA_ObjectRef obj, const wchar_t *_key) {
         
         if(PA_HasObjectProperty(obj, &key))
         {
-            PA_Variable v = PA_GetObjectProperty(obj, &key);
-            if(PA_GetVariableKind(v) == eVK_Boolean)
+            PA_Variable v;
+            if(getObjectProperty(obj, &key, &v))
             {
-                value = PA_GetBooleanVariable(v);
+                if(PA_GetVariableKind(v) == eVK_Boolean)
+                    value = PA_GetBooleanVariable(v);
+                PA_ClearVariable(&v);
             }
         }
         
@@ -533,10 +553,12 @@ double ob_get_n(PA_ObjectRef obj, const wchar_t *_key) {
         
         if(PA_HasObjectProperty(obj, &key))
         {
-            PA_Variable v = PA_GetObjectProperty(obj, &key);
-            if(PA_GetVariableKind(v) == eVK_Real)
+            PA_Variable v;
+            if(getObjectProperty(obj, &key, &v))
             {
-                value = PA_GetRealVariable(v);
+                if(PA_GetVariableKind(v) == eVK_Real)
+                    value = PA_GetRealVariable(v);
+                PA_ClearVariable(&v);
             }
         }
         
@@ -558,10 +580,13 @@ PA_CollectionRef ob_get_c(PA_ObjectRef obj, const wchar_t *_key) {
         
         if(PA_HasObjectProperty(obj, &key))
         {
-            PA_Variable v = PA_GetObjectProperty(obj, &key);
-            if(PA_GetVariableKind(v) == eVK_Collection)
+            PA_Variable v;
+            if(getObjectProperty(obj, &key, &v))
             {
-                value = PA_GetCollectionVariable(v);
+                if(PA_GetVariableKind(v) == eVK_Collection)
+                    value = PA_GetCollectionVariable(v);
+                else
+                    PA_ClearVariable(&v);
             }
         }
         
@@ -582,10 +607,13 @@ PA_ObjectRef ob_get_o(PA_ObjectRef obj, const wchar_t *_key) {
         
         if(PA_HasObjectProperty(obj, &key))
         {
-            PA_Variable v = PA_GetObjectProperty(obj, &key);
-            if(PA_GetVariableKind(v) == eVK_Object)
+            PA_Variable v;
+            if(getObjectProperty(obj, &key, &v))
             {
-                value = PA_GetObjectVariable(v);
+                if(PA_GetVariableKind(v) == eVK_Object)
+                    value = PA_GetObjectVariable(v);
+                else
+                    PA_ClearVariable(&v);
             }
         }
         
@@ -602,14 +630,30 @@ void ob_stringify(PA_ObjectRef obj, CUTF8String *value) {
     _params[0] = PA_CreateVariable(eVK_Object);
     PA_SetObjectVariable(&_params[0], PA_DuplicateObject(obj));
     PA_Variable vjson = PA_ExecuteCommandByID( /*JSON Stringify */1217, _params, 1);
+    PA_ErrorCode error = PA_GetLastError();
     PA_ClearVariable(&_params[0]);
     
+    // Handle-allocation failure returns raw kind 0, which GetVariableKind
+    // normalizes to Unistring even though it is not a valid string owner.
+    if(vjson.fType == 0)
+    {
+        std::cerr << "Finder Control: JSON Stringify returned no variable (" << error << ")\n";
+        return;
+    }
+    if(error != eER_NoErr)
+    {
+        PA_ClearVariable(&vjson);
+        std::cerr << "Finder Control: JSON Stringify failed (" << error << ")\n";
+        return;
+    }
+
     if(PA_GetVariableKind(vjson) != eVK_Unistring)
     {
         // "JSON Stringify" didn't return a string (unexpected failure) --
         // bail out instead of reading a Unistring out of a variable that
         // may not hold one.
         PA_ClearVariable(&vjson);
+        std::cerr << "Finder Control: JSON Stringify returned an unexpected type\n";
         return;
     }
     
