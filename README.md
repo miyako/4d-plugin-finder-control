@@ -85,6 +85,96 @@ fresh source version before a later manual Build.
 Offline checks: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s .github/scripts -v`
 and `actionlint .github/workflows/*.yml`.
 
+## Native ownership audit and regression
+
+The bounded audit baseline is `98f16438cfcdacab278942e1523fc5c8842b3357`.
+It follows the native ownership guidance at
+`miyako/skills@e6b492f:4d-skills/skills/4dplugin/SKILL.md`.
+This is not certification in a real 4D host or on Windows.
+
+Tracked native surfaces and reachability:
+
+| Surface | Audit scope |
+|---|---|
+| `4DPlugin-Finder-Control.cpp/.h` | All 12 selectors and startup; scalar setters/getters, array sorting and comparator, path conversion, platform callbacks and final parameter writes. |
+| `4D Plugin API/Classes/C_TEXT.cpp/.h`, `C_LONGINT.cpp/.h`, `ARRAY_TEXT.cpp/.h`, `C_TYPES.h` | Compiled macOS wrappers; borrowed text is copied into C++ storage, scalar output uses the engine content setter, array output creates an independent owner for every slot including index zero. |
+| `4D Plugin API/Classes/C_BLOB.cpp/.h` | Dormant first-party byte/hex/base64 wrapper; inspected despite not being in the target. No picture wrapper or native method callback helper is tracked. |
+| `support/4DPlugin-JSON.cpp/.h` | Dormant first-party object/picture/string/scalar helpers, owning property getters and synchronous stringify command; not compiled by either project or included by the active plugin. |
+| `Finder.h` | Generated ScriptingBridge interfaces, including borrowed platform properties; no SDK string allocation implementation. |
+| `4D Plugin API/4DPluginAPI.c/.h`, `PublicTypes.h`, `PrivateTypes.h`, `EntryPoints.h`, `Flags.h`, `.def` | Bundled SDK contract/provenance evidence; engine internals excluded from fixes. `FourDPackex` exports the actual entry, installs the callback and calls `PluginMain`. |
+| Xcode project/scheme, Windows solution/project/filters, root and bundled manifests | Xcode compiles main, SDK, C_TEXT, C_LONGINT and ARRAY_TEXT. The legacy Windows list contains only main and SDK, despite macOS-only application code; no Windows build claim. Manifest order matches selectors 1-12; selector 7 is `Finder SORT ARRAY(&Y)`. |
+| `include/json/*.h`, `a/libjsoncpp.a`, `lib/windows*/jsoncpp.lib`, prebuilt bundle/archives | Third-party or binary surfaces, unchanged and not used as evidence that source ownership is correct. |
+
+The exact bundled `4DPluginAPI.c` SHA-256 is
+`5bac571c5c4cafd280fa7f23d775458a23701287e8735be27d4a2190002f4e3f`
+(Git blob `62f745e91d81ef2c3c901c656ea8e175d3b173e8`).
+These bytes already exist at
+`075bf5ee12eee6664875f26a74c39ad958f1d667:Finder Control/4D Plugin API/4DPluginAPI.c`
+and were moved to their current path by
+`267f76ce5fccea99bbfd98585a3c73e5e39687e1`.
+The historical commit says "bump to v18", while file comments say v14/v13;
+none establishes a verified upstream SDK release identity. Upstream GitHub
+API access required organization SSO during this audit. No SDK engine or
+contract headers are rewritten.
+
+The bundled array setter accepts only Unicode arrays with non-null storage,
+`0 <= index <= fNbElements`, and a non-null input descriptor. Accepted
+assignments dispose the old element and shallow-transfer the new descriptor;
+rejections leave the caller owning its string. Getter descriptors are borrowed.
+The array wrapper now rejects missing storage before allocating output strings
+or publishing a newly created array type. Ordinary copy/replace/shrink/clear
+behavior and index-zero handling are preserved.
+
+Four dormant JSON string setter overloads and the picture setter now initialize
+an Undefined destination before shallow assignment, avoiding overwritten empty
+owners. Picture/object/collection setters retain their existing consuming
+handoff contract; callers must not dispose an already-consumed input. Successful
+property getters return owning variables: scalar helpers copy then clear them,
+including mismatches; successful object/collection helpers hand ownership to the
+caller, who must use `PA_DisposeObject`/`PA_DisposeCollection`. Failed getters
+are checked before any inspection, adoption or cleanup of their output.
+Stringify clears its owning return after conversion, but never reads/clears the
+SDK's invalid raw-kind-zero command-handle-failure sentinel. Errors are logged
+before the existing failure-shaped return. Borrowed synchronous SDK command
+inputs remain borrowed; `PA_ReturnString` is a content setter, not an array transfer.
+
+Run the unsigned macOS regression with an existing dedicated scratch directory:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 tests/native/run.py --workdir "$ARTIFACTS"
+```
+
+For comparison, export the baseline with `git archive` into a separate directory
+under the same scratch area and run the **same current runner/harness** with
+`--source "$BASELINE" --workdir "$ARTIFACTS"`. The runner compiles actual production
+sources and the full unchanged SDK, not extracted API snippets. ASan/UBSan are
+enabled; macOS LeakSanitizer is unavailable, so strings, handles, pictures and
+object/collection reference counts have explicit final balance assertions.
+Exact ASCII, BMP, supplementary and empty text is checked with both allocated
+and null empty strings, exact UTF-16 allocation/termination and UTF-8 bytes.
+Coverage includes replacement, copied borrowed inputs, independent array
+transfers, shrink/clear, rejected destinations/creation, successful owning
+handoff survival, poisoned failed outputs, scalar return copies and command
+failure sentinels. SDK resize-OOM count corruption is not certified by normal
+array tests and remains out of scope.
+
+On macOS arm64 with Apple Clang 21, the unchanged final harness passes all 32
+case/empty-representation combinations on the fix. Against the immutable
+baseline it fails 23 combinations: overwritten empty owners, owning getter
+results/mismatches, all five failed getter outputs, raw-zero command sentinels,
+and rejected/missing array storage. Ordinary array transfers, scalar return
+copies, successful stringify cleanup and the stubbed dispatcher pass on both.
+
+The exported dispatcher is invoked only after replacing ScriptingBridge with
+test-only classes and defining stub AppleEvent/permission functions. Even
+startup, reveal and trash operate exclusively on synthetic objects: no Finder,
+desktop, windows, preferences, private files or real permission prompts.
+No release configuration, signing, notarization, packaging, manual workflow
+dispatch, binary replacement or publication is part of this regression.
+Ambiguous SDK-only application-path/picture-data/pointer ownership and engine
+internals are deferred; no blanket disposal deletion or unrelated algorithm
+hardening is included.
+
 ## Requirements & platform notes
 
 - **macOS 10.14 (Mojave) or later.** The plugin checks Automation permission at startup using an API only available from macOS 10.14 onward.
